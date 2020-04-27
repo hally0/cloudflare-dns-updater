@@ -8,9 +8,9 @@ This script updates the correct address of one domain through the Cloudflare API
  * key
    * https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys - Use the edit zone template
  * zone 
-   * Example
+   * example.com
  * domain 
-   * Example.com
+   * foo.example.com || example.com
 
 ## Run the script
 This script is meant to run trough cron jobs. You can use this tool: https://crontab.guru to find a suitable time to run the job.
