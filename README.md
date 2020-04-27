@@ -13,7 +13,7 @@ This script updates the correct address of one domain through the Cloudflare API
    * Example.com
 
 ## Run the script
-This script is meant to run trough cron jobs. You can use this tool: https://crontab.guru to create find a suitable time to run the job.
+This script is meant to run trough cron jobs. You can use this tool: https://crontab.guru to find a suitable time to run the job.
 
 # Requirements:
  * jq
