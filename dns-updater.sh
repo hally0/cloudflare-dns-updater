@@ -48,6 +48,12 @@ dns_record_id=$(echo $dns_record | jq -r '.result[0].id')
 
 dns_record_ip=$(echo $dns_record | jq -r '.result[0].content')
 
+if [ -z "$dns_record_ip" ] || [[ "$dns_record_ip" == "null" ]]; then
+    msg="No ip found from Cloudflare"
+    echo $msg >> $FILE
+    exit 1
+fi
+
 echo "Cloudflare ip is: $dns_record_ip" >> $FILE
 echo "Your ip is: $newIp " >> $FILE
 
