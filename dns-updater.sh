@@ -13,13 +13,13 @@ fi
 
 if ! command -v jq &> /dev/null; then
     msg="jq is not installed, please install jq"
-    echo $msg >> $FILE
+    echo $(date +"%FT%H:%M:%S%z | $msg") >> $FILE
     exit 1
 fi
 
 if [ ! -f "$ENV_FILE" ]; then
     msg="No environment file found please create a .env.json file specifying token, zone and domain"
-    echo $msg >> $FILE
+    echo $(date +"%FT%H:%M:%S%z | $msg") >> $FILE
     exit 1
 fi
 
@@ -40,21 +40,20 @@ dns_record_ip=$(echo $dns_record | jq -r '.result[0].content')
 
 if [ -z "$dns_record_ip" ] || [[ "$dns_record_ip" == "null" ]]; then
     msg="No ip found from Cloudflare"
-    echo $msg >> $FILE
+    echo $(date +"%FT%H:%M:%S%z | $msg") >> $FILE
     exit 1
 fi
 
-echo "Cloudflare ip is: $dns_record_ip" >> $FILE
-echo "Your ip is: $newIp " >> $FILE
-
+echo $(date +"%FT%H:%M:%S%z | Cloudflare ip is: $dns_record_ip") >> $FILE
+echo $(date +"%FT%H:%M:%S%z | Your ip is: $newIp") >> $FILE
 if [[ "$dns_record_ip" != "$newIp" ]]; then
-     echo "Your ip has changed" >> $FILE
-     echo "Requesting ip change in cloudflare" >> $FILE
+     echo $(date +"%FT%H:%M:%S%z | Your ip has changed") >> $FILE
+     echo $(date +"%FT%H:%M:%S%z | Requesting ip change in cloudflare") >> $FILE
      success=$(curl -s -X PUT \
                     -H "Authorization: Bearer $token" \
                     -H "Content-Type: application/json" \
                     --data '{"type":"A","name":"'$domain'","content":"'$newIp'"}' \
                     "https://api.cloudflare.com/client/v4/zones/$zoneId/dns_records/$dns_record_id" \
                     | jq -r '.success')
-     echo "Success: $success" >> $FILE
+     echo $(date +"%FT%H:%M:%S%z | Success: $success") >> $FILE
 fi
