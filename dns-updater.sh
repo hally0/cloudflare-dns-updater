@@ -18,31 +18,21 @@ if ! command -v jq &> /dev/null; then
 fi
 
 if [ ! -f "$ENV_FILE" ]; then
-    msg="No environment file found please create a .env.json file specifying mail, key, zone and domain"
+    msg="No environment file found please create a .env.json file specifying token, zone and domain"
     echo $msg >> $FILE
     exit 1
 fi
 
-
-
-mail=$(jq .mail .env.json)
-key=$(jq .key .env.json)
-zone=$(jq .zone .env.json)
-domain=$(jq .domain .env.json)
+token=$(jq -r .token .env.json)
+zoneId=$(jq -r .zoneId .env.json)
+domain=$(jq -r .domain .env.json)
 
 newIp=$(curl -s https://api.ipify.org)
 
-zone=$(curl -s -X GET \
-     -H "X-Auth-Email:$mail" \
-     -H "X-Auth-Key:$key" \
-     -H "Content-Type: application/json" \
-     "https://api.cloudflare.com/client/v4/zones?name=$zone" | jq -r '.result[0].id')
-
 dns_record=$(curl -s -X GET \
-     -H "X-Auth-Email:$mail" \
-     -H "X-Auth-Key:$key" \
+     -H "Authorization: Bearer $token" \
      -H "Content-Type: application/json" \
-     "https://api.cloudflare.com/client/v4/zones/$zone/dns_records?name=$domain")
+     "https://api.cloudflare.com/client/v4/zones/$zoneId/dns_records?name=$domain")
 
 dns_record_id=$(echo $dns_record | jq -r '.result[0].id')
 
@@ -61,11 +51,10 @@ if [[ "$dns_record_ip" != "$newIp" ]]; then
      echo "Your ip has changed" >> $FILE
      echo "Requesting ip change in cloudflare" >> $FILE
      success=$(curl -s -X PUT \
-                    -H "X-Auth-Email:$mail" \
-                    -H "X-Auth-Key:$key" \
+                    -H "Authorization: Bearer $token" \
                     -H "Content-Type: application/json" \
                     --data '{"type":"A","name":"'$domain'","content":"'$newIp'"}' \
-                    "https://api.cloudflare.com/client/v4/zones/$zone/dns_records/$dns_record_id" \
+                    "https://api.cloudflare.com/client/v4/zones/$zoneId/dns_records/$dns_record_id" \
                     | jq -r '.success')
      echo "Success: $success" >> $FILE
 fi

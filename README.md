@@ -8,20 +8,18 @@ Create a .env.json and specify variables
 
 ```
 {
-    "mail": "mail",
-    "key": "key",
-    "zone": "zone",
+    "token": "token",
+    "zoneId": "zone",
     "domain": "domain"
 }
 ```
 
 ## Change the properties variables
 
-- Mail
-- key
-  - https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys - Use the edit zone template
-- zone
-  - example.com
+- token
+  - https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys - Use the edit zone template with read and edit
+- zoneId
+  - Listen in overview for domain
 - domain
   - foo.example.com || example.com
 
